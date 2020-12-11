@@ -21,48 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.engineer365.common.entity;
-
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Id;
-
-import org.engineer365.common.bean.Dumpable;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+package org.engineer365.common.misc;
 
 /**
- * 具有唯一性id标示的实体类的基类。
- * 所有property必须和@see org.engineer365.common.bean.GenericBean一一对应，因为
- * EO和VO间的property copy机制依赖于这个规定。
- *
- * 这里限制了id必须是String，所以需要非String的id时需要另外实现。
  *
  */
-@lombok.Getter
-@lombok.Setter
-@lombok.NoArgsConstructor
-@lombok.experimental.SuperBuilder
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public class GenericEO extends Dumpable {
+public class ClassHelper {
 
-  /**
-   * 唯一性标示
-   */
-  @Id
-  @Column(name = "id", length = 22)
-  String id;
 
-  /**
-   * 创建时间
-   */
-  @CreatedDate
-  @Column(name = "created_at", nullable = false)
-  Date createdAt;
-
+  public static String parseNameSuffix(Class<?> clazz) {
+    var n = clazz.getSimpleName();
+    int pos = n.lastIndexOf('.');
+    if (pos < 0) {
+      return n;
+    }
+    return n.substring(pos + 1);
+  }
 
 }

@@ -23,15 +23,15 @@
  */
 package org.engineer365.platform.user.app.dao;
 
-import org.engineer365.common.dao.jpa.DAOTestBase;
 import org.engineer365.common.misc.UuidHelper;
 import org.engineer365.platform.user.api.enums.AccountType;
+import org.engineer365.platform.user.app.dao.support.JpaDAOTestSupport;
 import org.engineer365.platform.user.app.entity.AccountEO;
 import org.engineer365.platform.user.app.entity.UserEO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AccountDAOTest extends DAOTestBase<AccountEO, String, AccountDAO> {
+public class AccountDAOTest extends JpaDAOTestSupport<AccountEO, String, AccountDAO> {
 
   @Autowired
   public AccountDAOTest(AccountDAO dao) {
@@ -40,28 +40,27 @@ public class AccountDAOTest extends DAOTestBase<AccountEO, String, AccountDAO> {
 
   @Test
   void test_getByCredentialAndType_happy() {
-    var u = new UserEO();
-    u.setName("n").setFullName("fn").setRoot(false).setId(UuidHelper.shortUuid());
+    var u = UserEO.builder().name("n").fullName("fn").root(false).id(UuidHelper.shortUuid()).build();
     getEntityManager().persist(u);
 
     // 匹配
-    var a1 = new AccountEO();
-    a1.setCredential("c").setUser(u).setType(AccountType.EMAIL).setPassword("p1").setId(UuidHelper.shortUuid());
+    var a1 = AccountEO.builder().credential("c").user(u).type(AccountType.EMAIL).password("p1")
+        .id(UuidHelper.shortUuid()).build();
     a1 = importEntity(a1);
 
     // type不匹配
-    var a2 = new AccountEO();
-    a2.setCredential("c").setUser(u).setType(AccountType.MOBILE).setPassword("p2").setId(UuidHelper.shortUuid());
+    var a2 = AccountEO.builder().credential("c").user(u).type(AccountType.MOBILE).password("p2")
+        .id(UuidHelper.shortUuid()).build();
     a2 = importEntity(a2);
 
     // credential不匹配
-    var a3 = new AccountEO();
-    a3.setCredential("c-X").setUser(u).setType(AccountType.EMAIL).setPassword("p3").setId(UuidHelper.shortUuid());
+    var a3 = AccountEO.builder().credential("c-X").user(u).type(AccountType.EMAIL).password("p3")
+        .id(UuidHelper.shortUuid()).build();
     a3 = importEntity(a3);
 
     // credential和type都不匹配
-    var a4 = new AccountEO();
-    a4.setCredential("c-X").setUser(u).setType(AccountType.MOBILE).setPassword("p4").setId(UuidHelper.shortUuid());
+    var a4 = AccountEO.builder().credential("c-X").user(u).type(AccountType.MOBILE).password("p4")
+        .id(UuidHelper.shortUuid()).build();
     a4 = importEntity(a4);
 
     var actual = dao().getByCredentialAndType("c", AccountType.EMAIL);

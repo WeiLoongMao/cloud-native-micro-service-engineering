@@ -21,48 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.engineer365.common.entity;
+package org.engineer365.platform.user.test;
 
-import java.util.Date;
+import org.engineer365.platform.user.test.support.UserApiV1TestSupport;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Id;
+@Testcontainers
+@Execution(ExecutionMode.SAME_THREAD) // testcontainers junit5模块不支持parallel
+public class UserApiV1IT extends UserApiV1TestSupport {
 
-import org.engineer365.common.bean.Dumpable;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-/**
- * 具有唯一性id标示的实体类的基类。
- * 所有property必须和@see org.engineer365.common.bean.GenericBean一一对应，因为
- * EO和VO间的property copy机制依赖于这个规定。
- *
- * 这里限制了id必须是String，所以需要非String的id时需要另外实现。
- *
- */
-@lombok.Getter
-@lombok.Setter
-@lombok.NoArgsConstructor
-@lombok.experimental.SuperBuilder
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public class GenericEO extends Dumpable {
-
-  /**
-   * 唯一性标示
-   */
-  @Id
-  @Column(name = "id", length = 22)
-  String id;
-
-  /**
-   * 创建时间
-   */
-  @CreatedDate
-  @Column(name = "created_at", nullable = false)
-  Date createdAt;
-
+  @Test
+  public void test_getUser_notFound() throws Exception {
+    var user = getUser("xxx");
+    Assertions.assertNull(user);
+  }
 
 }
